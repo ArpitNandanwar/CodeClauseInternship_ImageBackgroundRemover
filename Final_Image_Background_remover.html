@@ -1,0 +1,129 @@
+<!-- BCXxYpsWohqUD5iqKsJ15x3g -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Manipulation Tool</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <style>
+        body {
+            /* background: url('https://www.pexels.com/photo/seaside-994605/') center/cover;
+             */
+             /* background-image: url('https://www.pexels.com/photo/seaside-994605/'); */
+             /* background-image: -webkit-image-set('https://www.pexels.com/photo/seaside-994605/'); */
+            color: black; /* Set text color to white for better visibility on the background */
+            /* opacity: 0.2; */
+        }
+    
+        .main-container {
+            
+            align-items: center;
+            margin-top: 80px;
+            background-color: transparent;
+        }
+    
+        .card {
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.2); /* Add a semi-transparent white background to the card */
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Add a subtle box shadow for depth */
+        }
+    
+        #resultImage {
+            max-width: 100%;
+            height: auto;
+            display: none;
+            /* opacity: 0.2; */
+            /* background-color: rgba(0, 0, 0, 0.2); */
+        }
+    
+        /* Change the background color of the buttons */
+        .btn-primary {
+            background-color: #28a745; /* Green color for the "Upload" button */
+            border-color: #28a745;
+        }
+    
+        .btn-warning {
+            background-color: peru; /* Yellow color for the "Download" button */
+            border-color: peru;
+        }
+
+        .form-control{
+          background-color: transparent;
+        }
+        .form-group{
+            background-color: transparent;
+        }
+    </style>
+</head>
+<body  background="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
+    <div class="container main-container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3 card">
+                <form>
+                    <div class="form-group">
+                        <label for="fileInput">Select a File: </label> 
+                        <input id="fileInput" class="form-control" type="file">
+                    </div>
+                    <button class="btn btn-primary m-1" type="button" onclick="submitHandler()">Upload</button>
+                    <button class="btn btn-warning" type="button" onclick="downloadFile()">Download</button>
+                </form>
+
+                <div class="mt-4">
+                    <img id="resultImage" class="img-fluid" alt="Processed Image">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <script>
+        let imageURL;
+
+        function submitHandler() {
+            const fileInput = document.getElementById('fileInput');
+            const image = fileInput.files[0];
+
+            const formData = new FormData();
+            formData.append('image_file', image);
+            formData.append('size', 'auto');
+
+            const apiKey = 'BCXxYpsWohqUD5iqKsJ15x3g';
+
+            fetch('https://api.remove.bg/v1.0/removebg', {
+                method: 'POST',
+                headers: {
+                    'X-API-Key': apiKey
+                },
+                body: formData
+            })
+            .then(function (response) {
+                return response.blob();
+            })
+            .then(function (blob) {
+                const url = URL.createObjectURL(blob);
+                imageURL = url;
+                document.getElementById('resultImage').src = url;
+                document.getElementById('resultImage').style.display = 'block';
+            })
+            .catch();
+        }
+
+        function downloadFile() {
+            var anchorElement = document.createElement('a');
+            anchorElement.href = imageURL;
+            anchorElement.download = 'processed_image.png';
+            document.body.appendChild(anchorElement);
+
+            anchorElement.click();
+
+            document.body.removeChild(anchorElement);
+        }
+    </script>
+</body>
+</html>
